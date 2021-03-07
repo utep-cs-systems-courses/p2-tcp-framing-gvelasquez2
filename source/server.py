@@ -26,7 +26,6 @@ s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 s.bind((listenAddr,listenPort))
 s.listen(1)
 
-contents = []
 
 while True:
     conn,addr = s.accept()
