@@ -42,21 +42,4 @@ def partition(string):
         right = int(num) + (len(num)+1)
         return left,right
     else:
-        return None
-
-def parse(string):
-    left,right = partition(string)
-
-    if len(string) < right:
-        return None,string
-    else:
-        message = string[left:right]
-        remainingString = string[right:]
-
-        if remainingString == "":
-            return message,remainingString
-        else:
-            return message,remainingString
-
-
-        
+        return None        
