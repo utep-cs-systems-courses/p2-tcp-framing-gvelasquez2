@@ -13,11 +13,12 @@ class framedSocket:
         message = lengthBA + message
         self.cs.send(message)
 
-    def recieveMessage(self):
-        msgList = []
+        
+    def receiveMessage(self):
+        message = ""
         data = self.cs.recv(100).decode()
         left,right = partition(data)
-        msgList.append(data[left:right])
+        message += data[left:right]
         data = data[right:]
         
         while(data):
@@ -25,9 +26,9 @@ class framedSocket:
             if len(data) < right:
                 data += self.cs.recv(100).decode()
             else:
-                msgList.append(data[left:right])
+                message += data[left:right]
                 data = data[right:]
-        return msgList
+        return message
         
 
 def partition(string):

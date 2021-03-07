@@ -26,10 +26,22 @@ s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 s.bind((listenAddr,listenPort))
 s.listen(1)
 
+contents = []
+
 while True:
     conn,addr = s.accept()
     fs = framedSocket(conn)
     if os.fork()==0:
-        print("Connected by", addr)
-        contents = fs.recieveMessage()
-        print(contents[1])
+        contents = (fs.receiveMessage())
+
+        filename = contents
+        
+        if os.path.isfile(filename):
+            fs.sendMessage(b"NO")
+            conn.shutdown(socket.SHUT_WR)
+        else:
+            fs.sendMessage(b"OK")
+
+        fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
+        os.write(fd,fs.receiveMessage().encode())
+        os.close(fd)

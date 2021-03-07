@@ -1,6 +1,8 @@
 import socket,sys,re,time,os
 sys.path.append("../lib")
 import params
+from read import my_getLine
+from read import parseTCPInput
 from socketFramed import framedSocket 
 
 switchesVarDefaults = (
@@ -54,7 +56,31 @@ if delay != 0:
     time.sleep(delay)
     print("done sleeping")
 
+    
 fs = framedSocket(s)
-fs.sendMessage(b"Send")
-fs.sendMessage(b"Test")
-s.close()
+
+input = my_getLine()
+command,localfile,host,remotefile = parseTCPInput(input)
+
+fs.sendMessage(remotefile.encode())
+
+reply = fs.receiveMessage()
+
+if reply == "NO":
+    os.write(2,("Failed").encode())
+    sys.exit(1)
+        
+else:
+    fd = os.open(localfile, os.O_RDONLY)
+    buffer = ""
+    message = ""
+
+    while(True):
+        buffer = os.read(fd,100)
+        string = buffer.decode()
+        if len(string) == 0:
+            break
+        message += string
+        
+    fs.sendMessage(message.encode())
+    s.close()
