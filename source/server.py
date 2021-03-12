@@ -1,7 +1,7 @@
 # Gilbert Velasquez
 # CS 4375: Theory of Operating Systems
 # Dr. Freudenthal
-# This code ...
+# This code is a part of Lab Assignment #2 TCP file Transfer. 
 
 import socket, sys, re, time, os
 sys.path.append("../lib")
@@ -30,17 +30,18 @@ s.listen(1)
 while True:
     conn,addr = s.accept()
     fs = framedSocket(conn)
+    
     if os.fork()==0:
-        contents = (fs.receiveMessage())
+        contents = (fs.receiveMessage()) # get command from client 
 
         filename = contents
         
-        if os.path.isfile(filename):
+        if os.path.isfile(filename): # Check if there is already a file named filename 
             fs.sendMessage(b"NO")
             conn.shutdown(socket.SHUT_WR)
         else:
             fs.sendMessage(b"OK")
 
-        fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
+        fd = os.open(filename, os.O_CREAT | os.O_WRONLY) # open the file, so it can be written to 
         os.write(fd,fs.receiveMessage().encode())
         os.close(fd)

@@ -1,3 +1,8 @@
+# Gilbert Velasquez
+# CS 4375: Theory of Operating Systems
+# Dr. Freudenthal
+# This file is a part of Lab Assignment #2 TCP File Transfer. 
+
 import socket,sys,re,time,os
 sys.path.append("../lib")
 import params
@@ -62,25 +67,25 @@ fs = framedSocket(s)
 input = my_getLine()
 command,localfile,host,remotefile = parseTCPInput(input)
 
-fs.sendMessage(remotefile.encode())
+fs.sendMessage(remotefile.encode()) # send filename 
 
-reply = fs.receiveMessage()
+reply = fs.receiveMessage() # get server's response 
 
-if reply == "NO":
+if reply == "NO": # File can't be transferred 
     os.write(2,("Failed").encode())
     sys.exit(1)
         
-else:
+else: # "OK"
     fd = os.open(localfile, os.O_RDONLY)
     buffer = ""
     message = ""
 
     while(True):
-        buffer = os.read(fd,100)
+        buffer = os.read(fd,100) # read 100 bytes 
         string = buffer.decode()
-        if len(string) == 0:
-            break
+        if len(string) == 0: # terminate if empty 
+            break 
         message += string
         
-    fs.sendMessage(message.encode())
+    fs.sendMessage(message.encode()) # send the contents as a message 
     s.close()
