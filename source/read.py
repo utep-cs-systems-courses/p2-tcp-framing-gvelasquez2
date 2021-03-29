@@ -1,7 +1,8 @@
 # GIlbert Velasquez
 # CS 4375: Theory of Operating Systems
 # Dr. Fruedenthal
-# This program ...
+# This file is a part of Lab Assignment #2 TCP File Transfer. This file is contains all the
+# methods needed to read from fd's that will be used in this lab.
 
 from os import read
 
@@ -45,8 +46,6 @@ def parseTCPInput(string):
     tokens = string.split()
     command = tokens[0]
     localfile = tokens[1]
-    tokens2 = tokens[2].split(':')
-    host = tokens2[0]
-    remotefile = tokens2[1]
+    remotefile = tokens[2]
 
-    return command,localfile,host,remotefile
+    return command,localfile,remotefile

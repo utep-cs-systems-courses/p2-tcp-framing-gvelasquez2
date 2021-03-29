@@ -1,7 +1,8 @@
 # Gilbert Velasquez
 # CS 4375: Theory of Operating Systems
 # Dr. Freudenthal
-# This code is a part of Lab Assignment #2 TCP file Transfer. 
+# This code is a part of Lab Assignment #2 TCP file Transfer. This code uses a fork based Server.
+# It was built from the demo code provided by Dr. Freudenthal.
 
 import socket, sys, re, time, os
 sys.path.append("../lib")
@@ -17,21 +18,21 @@ progname = "echoserver"
 paramMap = paramMap = params.parseParams(switchesVarDefaults)
 
 listenPort = paramMap['listenPort']
-listenAddr = ''
+listenAddr = '' # all available interfaces 
 
 if paramMap['usage']:
     params.usage()
 
-s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.bind((listenAddr,listenPort))
-s.listen(1)
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) # create new socket, stream = 2 way  
+s.bind((listenAddr,listenPort)) # attach socket to fd,      local host 50001
+s.listen(1) # listen for new connections 
 
 
-while True:
+while True: # For every connection
     conn,addr = s.accept()
     fs = framedSocket(conn)
     
-    if os.fork()==0:
+    if os.fork()==0: # Fork off a child to become server  
         contents = (fs.receiveMessage()) # get command from client 
 
         filename = contents

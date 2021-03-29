@@ -1,7 +1,8 @@
 # Gilbert Velasquez
 # CS 4375: Theory of Operating Systems
 # Dr. Freudenthal
-# This file is a part of Lab Assignment #2 TCP File Transfer. 
+# This file is a part of Lab Assignment #2 TCP File Transfer. This file act as the Client and
+# is built from the demo code provided by Dr. Fruedenthal. 
 
 import socket,sys,re,time,os
 sys.path.append("../lib")
@@ -51,7 +52,7 @@ for res in socket.getaddrinfo(serverHost, serverPort, socket.AF_UNSPEC, socket.S
         continue
     break
 
-if s is None:
+if s is None: # failed 
     print("could not open socket")
     sys.exit(1)
 
@@ -65,7 +66,7 @@ if delay != 0:
 fs = framedSocket(s)
 
 input = my_getLine()
-command,localfile,host,remotefile = parseTCPInput(input)
+command,localfile,remotefile = parseTCPInput(input)
 
 fs.sendMessage(remotefile.encode()) # send filename 
 
