@@ -7,30 +7,34 @@
 class framedSocket:
     def __init__(self,connectedSocket):
         self.cs = connectedSocket
+        self.buffer = ""
 
     def sendMessage(self,message):
         lengthStr = str(len(message)) + ':' # framing 
         lengthBA = bytearray(lengthStr,'utf-8')
         message = lengthBA + message
-        self.cs.send(message) # send message 
-
-        
+        while len(message):
+            sent = self.cs.send(message) # send message
+            message = message[sent:]
+                    
     def receiveMessage(self):
         message = ""
-        data = self.cs.recv(100).decode() # receive message 
-        left,right = partition(data) # seperate message 
-        message += data[left:right] # append message
-        data = data[right:] # remove message 
+        self.buffer += self.cs.recv(100).decode() # receive message
+        # fix error on decoding non text
         
-        while(data): # while there is still a message to be read 
-            left,right = partition(data)
-            if len(data) < right:
-                data += self.cs.recv(100).decode()
+        left,right = partition(self.buffer) # seperate message 
+        message += self.buffer[left:right] # append message
+        self.buffer = self.buffer[right:] # remove message 
+        
+        while(self.buffer): # while there is still a message to be read 
+            left,right = partition(self.buffer)
+            if len(self.buffer) < right:
+                self.buffer += self.cs.recv(100).decode()
             else:
-                message += data[left:right]
-                data = data[right:]
+                message += self.buffer[left:right]
+                self.buffer = self.buffer[right:]
         return message
-        
+
 
 # This method returns the indicies of the first and last character in a message 
 def partition(string):

@@ -36,7 +36,7 @@ class Worker(Thread):
 
     def endTransfer(self,filename):
         global inTransfer
-        inTransfer.remove(fileName)
+        inTransfer.remove(filename)
 
     def run(self):
         fs = framedSocket(self.conn)
@@ -59,7 +59,7 @@ class Worker(Thread):
         fd = os.open(filename, os.O_CREAT | os.O_WRONLY)
         os.write(fd,fs.receiveMessage().encode())
         os.close(fd)
-        sled.endTransfer(filename)
+        self.endTransfer(filename)
 
         self.conn.shutdown(socket.SHUT_WR)
         
